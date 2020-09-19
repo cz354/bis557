@@ -3,5 +3,9 @@
 language: R
 cache: packages
 
+r_packages:
+  - covr
+  - testthat
+
 after_success:
     - Rscript -e 'covr::coveralls()'
