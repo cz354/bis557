@@ -1,13 +1,13 @@
 Package: bis557
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: The package for bis557's homework.
+Version: 0.0.1
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Chi",
+           family = "Zhang",
            role = c("aut", "cre"),
-           email = "first.last@example.com",
+           email = "chi.zhang.cz354@yale.edu",
            comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+Description: It contains function and data set that BIS557 use.
 License: LGPL (>= 2.1)
 Encoding: UTF-8
 LazyData: true

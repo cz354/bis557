@@ -28,3 +28,14 @@ test_that("You gradient_descent_OLS() function works with contrasts.", {
 })
 
 
+test_that("Your gradient_descent_OLS() function works in a tougher case.", {
+
+  data(lm_patho)
+
+  fit_linear_model <- gradient_descent_OLS(y ~., lm_patho)
+
+  fit_lm <- lm(y ~., lm_patho)
+
+  expect_equivalent(fit_lm$coefficients, fit_linear_model$coefficients,
+                    tolerance = 1e-5)
+})

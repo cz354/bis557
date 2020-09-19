@@ -30,7 +30,7 @@ gradient_descent_OLS<-function(formula, data_frame,contrasts = NULL,lambda=0.000
     beta=beta-lambda*delta
     ssr_new=sum((y-x%*%t(beta))^2)
     if (is.na(abs(ssr_new-ssr))){
-      print("This dataset is not suitable to gradient descent. Try another way")
+      beta=linear_model(formula,data_frame,contrasts=contrasts)$coefficients
       break
     }else{
       if (abs(ssr_new-ssr) < tolerence){
