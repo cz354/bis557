@@ -1,18 +1,36 @@
+
 # bis557
 
-This is the package for homework1 of BIS557 at Yale university
+<!-- badges: start -->
+[![Travis build status](https://travis-ci.org/cz354/bis557.svg?branch=master)](https://travis-ci.org/cz354/bis557)
+[![codecov](https://codecov.io/gh/cz354/bis557/branch/master/graph/badge.svg)](https://codecov.io/gh/cz354/bis557)
+<!-- badges: end -->
 
-There are two functions on the package: linear_model() and gradient_descent_OLS()
+The goal of bis557 is to include the material of the homework1 for the Yale Biostatistics bis557 class.
 
-There is also a dataset lm_patho in this package.
+## Installation
+
+The development version of the packages can be installed from [GitHub](https://github.com/) with:
+
+
+``` r
+# install.packages("devtools")
+devtools::install_github("kaneplusplus/bis557")
+
+install.packages("bis557")
+```
 
 ## Example
-```{r}
+
+This Example of the function linear_model().
+
+``` r
 data(iris)
-
-#The example for function linear_model
 linear_model(Sepal.Length ~ ., iris,contrasts = NULL)$coefficients
+```
+This Example of the function gradient_descent_OLS().
 
-#The example for function gradient_descent_OLS
+``` r
+data(iris)
 gradient_descent_OLS(Sepal.Length ~ ., iris,contrasts = NULL)$coefficients
 ```
