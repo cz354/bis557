@@ -3,6 +3,7 @@
 
 <!-- badges: start -->
 [![Travis build status](https://travis-ci.com/cz354/bis557.svg?branch=master)](https://travis-ci.com/cz354/bis557)
+[![Coverage Status](https://coveralls.io/repos/github/cz354/bis557/badge.svg?branch=master)](https://coveralls.io/github/cz354/bis557?branch=master)
 <!-- badges: end -->
 
 The goal of bis557 is to include the material of the homework1 for the Yale Biostatistics bis557 class.
