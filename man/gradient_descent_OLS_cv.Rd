@@ -24,6 +24,8 @@ gradient_descent_OLS_cv(
 
 \item{contrasts}{Default is NULL. a list of constasts for factor variables}
 
+\item{lambda}{Default is 0.0001. The speed of gradient descent}
+
 \item{tolerence}{Default is 1e-20. The minimum difference between the old ssr and the update ssr.}
 
 \item{beta1}{Default is 1. The initial value of beta.}

@@ -4,6 +4,7 @@
 #' @param  data_frame a data_frame
 #' @param  nfolds Default is 10. the number of folds for cross validation
 #' @param  contrasts Default is NULL. a list of constasts for factor variables
+#' @param  lambda Default is 0.0001. The speed of gradient descent
 #' @param  tolerence Default is 1e-20. The minimum difference between the old ssr and the update ssr.
 #' @param  beta1 Default is 1. The initial value of beta.
 #' @param  max_itr Default is 1e6. The maximum number of iterations
