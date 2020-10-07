@@ -2,7 +2,7 @@
 % Please edit documentation in R/lm-ridge.r
 \name{lm_ridge}
 \alias{lm_ridge}
-\title{}
+\title{Ridge regression}
 \usage{
 lm_ridge(formula, data_frame, contrasts = NULL, lambda)
 }

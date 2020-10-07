@@ -2,7 +2,7 @@
 % Please edit documentation in R/cv-gradient-descent.r
 \name{gradient_descent_OLS_cv}
 \alias{gradient_descent_OLS_cv}
-\title{}
+\title{A function fitting the OLS model}
 \usage{
 gradient_descent_OLS_cv(
   formula,

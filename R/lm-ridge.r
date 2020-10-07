@@ -1,4 +1,4 @@
-#' @title 
+#' @title Ridge regression
 #' @description  This function is for ridge regression
 #' @param  formula a formula of linear model
 #' @param  data_frame a data_frame
