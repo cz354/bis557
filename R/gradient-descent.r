@@ -40,6 +40,7 @@ gradient_descent_OLS<-function(formula, data_frame,contrasts = NULL,lambda=0.000
   }
   }
   
-  list(coefficients=beta)
-  
+  ret=list(formula=formula,coefficients=beta)
+  class(ret)<-"gradient-descent"
+  ret
 }

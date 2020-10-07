@@ -18,6 +18,6 @@ linear_model<-function(formula, data_frame,contrasts = NULL){
   
   beta=qr.coef(qr(x),y)
   
-  list(coefficients=beta)
+  list(formula=formula,coefficients=beta)
   
 }
