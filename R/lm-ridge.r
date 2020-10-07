@@ -6,7 +6,7 @@
 #' @param  lambda The penalty parametor for ridge regression
 #' @examples 
 #' data(iris)
-#' lm_ridge(Sepal.Length ~ ., iris,nfolds=10)$coefficients
+#' lm_ridge(Sepal.Length ~ ., iris,lambda=0.5)$coefficients
 #' @export
 
   lm_ridge <- function(formula, data_frame,contrasts=NULL, lambda){
