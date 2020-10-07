@@ -1,0 +1,159 @@
+---
+title: "The vignette for homework 2"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The vignette for homework 2}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(bis557)
+```
+
+# qestion 1
+## CASL 2.11 Exercises problem number 5. Include the write up in your homework-2 vignette.
+$X=(1,x), \hat{\beta}=(\hat{\beta_0},\hat{\beta_1}), x=(x_1,x_2,...,x_n)^t,y=(y_1,y_2,...,y_n)^t$
+
+$$
+\begin{equation}
+\begin{aligned}
+\hat{\beta}=(X^TX)^{-1}X^Ty\\
+\end{aligned}
+\end{equation}
+$$
+$$
+(X^TX)^{-1}=
+\{\begin{bmatrix}
+1 & 1 &.&1 \\
+x_1 & x_2 &.&x\\
+\end{bmatrix}
+\begin{bmatrix}
+1 & x_1 \\
+1 & x_2 \\
+.& . \  \\
+.& . \  \\
+1 & x_n
+\end{bmatrix}\}^{-1}
+=\frac{1}{n\sum_ix_i^2-(\sum_ix_i)^2}\begin{bmatrix}
+\sum_{i}x_i^2 & -\sum_{i}x_i\\
+-\sum_{i}x_i & n\\
+\end{bmatrix}
+$$
+$$
+\hat{\beta}=(\bar{y} - \frac{\sum_i(x_i-\bar{x})(y_i-\bar{y})}{\sum_i{(x_i-\bar{x})^2}}\bar{x},\frac{\sum_i(x_i-\bar{x})(y_i-\bar{y})}{\sum_i{(x_i-\bar{x})^2}})
+$$
+$$
+\hat{\beta}_0=\bar{y} - \frac{\sum_i(x_i-\bar{x})(y_i-\bar{y})}{\sum_i{(x_i-\bar{x})^2}}\bar{x}
+$$
+
+$$
+\hat{\beta}_1=\frac{\sum_i(x_i-\bar{x})(y_i-\bar{y})}{\sum_i{(x_i-\bar{x})^2}}
+$$
+
+# qestion 2
+Implement a new function fitting the OLS model using gradient descent that calculates the penalty based on the out-of-sample accuracy. Create test code. How does it compare to the OLS model? Include the comparison in your "homework-2" vignette.
+### compare with the OLS model
+```{r}
+library(bis557)
+library(rsample)
+library(foreach)
+
+#Our function gradient_sescent_OLS_cv
+data(iris)
+fit_gradient <- gradient_descent_OLS_cv(Sepal.Length ~ ., iris)
+print(fit_gradient$MSE)
+
+#The OLS model
+folds <- vfold_cv(iris, v = 10)
+formula <- Sepal.Length ~ .
+SSE <- foreach(fold = folds$splits, .combine = c) %do% {
+  fit <- lm(formula = formula, data = analysis(fold))
+  sum(as.vector(assessment(fold)[, as.character(formula)[2]] -
+                    as.vector(predict(fit, assessment(fold))))^2)
+  }  
+print(mean(SSE))
+```
+Here we can see that their MSE are similiar. 
+# qestion 3
+Implement a ridge regression function taking into account colinear (or nearly colinear) regression variables. Create test code for it. Show that it works in your homework-2 vignette.
+```{r}
+iris$Length2 <- iris$Sepal.Length*2
+fit_ridge <- lm_ridge(Sepal.Width ~ Sepal.Length+Petal.Length+Petal.Width+Length2+Species, iris,lambda=0.5)
+fit_ridge
+```
+
+# qestion 4
+Implement your own method and testing for optimizing the ridge parameter $\lambda$. Show that it works in your homework-2 vignette.
+```{r}
+library(ggplot2)
+formula <- Sepal.Width ~ Sepal.Length+Petal.Length+Petal.Width+Length2+Species
+lambda <- seq(0.01, 4, by = 0.01)
+data=iris
+folds <- vfold_cv(data)
+SSE <- foreach(i = lambda) %do% {
+  foreach(fold = folds$splits, .combine = c) %do% {
+    fit <- lm_ridge(formula, analysis(fold), lambda=i)
+    X<- model.matrix(formula,assessment(fold))
+    sum(as.vector(assessment(fold)[, as.character(formula)[2]] - 
+                as.vector(t(fit$coefficients)%*%t(X)))^2)
+  }
+}
+MSE <- vector(,length(lambda))
+for(i in 1:length(lambda)){
+  MSE[i] <- mean(matrix(unlist(SSE),10,length(lambda))[,i])
+  
+}
+
+lambdas=data.frame(lambda=lambda, MSE=MSE)
+lambda_optimize <- lambdas[order(lambdas$MSE),]$lambda[1]
+lambda_optimize
+p=ggplot(data=lambdas)
+p+geom_line(aes(x=lambda,y=MSE))
+```
+
+# qestion 5
+Consider the LASSO penalty
+$$
+\frac{1}{2n} ||Y - X \beta||_2^2 + \lambda ||\beta||_1.
+$$
+Show that if $|X_j^TY| \leq n \lambda$, then $\widehat \beta^{\text{LASSO}}$ must be zero.
+
+Let
+$$
+\begin{equation}
+\begin{split}
+L(\beta)=\frac{1}{2n} ||Y - X \beta||_2^2 + \lambda ||\beta||_1=\frac{1}{2n} (Y^TY-2\beta^TX^TY+\beta^TX^TX\beta) + \lambda ||\beta||_1
+\\=\frac{1}{2n} Y^TY+\frac{1}{2n}\sum_{j=1}^p(\beta_j^2X_j^TX_j-2\beta_jX_j^TY+2n\lambda|\beta_j|)
+\end{split}
+\end{equation}
+$$
+
+
+Then,first when $\beta_j =0$ ,$\beta_j^2X_j^TX_j-2\beta_jX_j^TY+2n\lambda|\beta_j|=0$. \ \
+
+If $\beta_j >0$
+$$
+\frac{dL(\beta)}{d\beta_j}=\frac{1}{2n}(2\beta_jX_j^TX_j-2X_j^TY+2n\lambda)=0
+$$
+$$
+X_j^TY=\beta_j^{LASSO}X_j^TX_j+n\lambda>n\lambda
+$$
+
+If $\beta_j <0$
+$$
+\frac{dL(\beta)}{d\beta_j}=\frac{1}{2n}(2\beta_jX_j^TX_j-2X_j^TY-2n\lambda)=0
+$$
+$$
+X_j^TY=\beta_j^{LASSO}X_j^TX_j-n\lambda<-n\lambda
+$$
+
+Since we want to minimize $L(\beta)$, so when $|X_j^TY| \leq n \lambda$, $\widehat \beta^{\text{LASSO}}$ must be zero
+
