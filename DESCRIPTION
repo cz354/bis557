@@ -1,5 +1,5 @@
 Package: bis557
-Title: The package for bis557's homework.
+Title: The package for bis557's homework
 Version: 0.0.1
 Authors@R: 
     person(given = "Chi",
@@ -17,7 +17,10 @@ Imports:
     ggplot2,
     foreach, 
     rsample,
-    reticulate
+    reticulate,
+    casl,
+    devtools,
+    stats
 Depends: 
     R (>= 2.10)
 Suggests: 
