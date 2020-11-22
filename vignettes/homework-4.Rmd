@@ -83,34 +83,24 @@ We could observe the beta we got is very precise.
 
 3.Implement your own LASSO regression function in Python. Show that the results are the same as the function implemented in the casl package.
 
-The function we create in this question is lm_lasso_py whose codes are in the file "lm-lasso-py.r" and its test codes are in "test-lm-lasso-py.r"
+The function we create in this question is lm_lasso_py whose codes are in the file "lm-lasso-py.py" and its test codes are in "test-lm-lasso-py.r"
 
-We know that:
-$$\hat(\beta)=sign(X^TY)(X^TX)^{-1}max\{|X^TY|-n\lambda,0\}$$
+With the code in the textbook "A computational approach to statistical learning" as our reference, we write soft threshold function, updating beta vector using coordinate descent function and computing linear elastic net using coordinate descent function in python.
+
+```{r}
+reticulate::source_python('../lm_lasso_py.py')
+```
+
 ```{r}
 data(iris)
 Y=matrix(iris$Sepal.Length, ncol = 1)
 X=model.matrix(Sepal.Length ~ .,iris)
-fit_lasso=lm_lasso_py(Y,X,lambda=0.01)
+W=1/nrow(Y)
+beta=c(rep(0,ncol(X)))
+fit_lasso=lm_lasso_py(Y,X,lambda=0.01,beta,W)
 fit_casl= casl::casl_lenet(X,Y,lambda=0.01,maxit=1000L)
 fit_lasso$coefficients
 fit_casl
-
-lm_lasso_py <- function(Y,X, lambda){
-  np <- import("numpy", as = "np", convert = FALSE)
-  n=nrow(X)
-  X=r_to_py(X)
-  Y=r_to_py(Y)
-  sign=np$sign(X$T$dot(Y))
-  max=np$maximum(np$subtract(np$abs(X$T$dot(Y)),n*lambda),0)
-  inv=np$linalg$inv(X$T$dot(X))
-  beta = np$multiply(sign,inv$dot(max))
-  ret <- list("coefficients" = py_to_r(beta))
-  return (ret)
-  }
-
-
 ```
 
-4. Final Project proposal
 
