@@ -1,0 +1,116 @@
+---
+title: "The vignette for homework 4"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The vignette for homework 4}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Since in this homework, we need to use python in Rmarkdown, so here we need to download package reticulate. And 'r-reticulate' is the conda environment I created in class whose python version is 3.9.
+
+```{r setup}
+#install.packages("reticulate")
+library(bis557)
+library(reticulate)
+library(devtools)
+library(casl)
+use_condaenv("r-reticulate")
+```
+
+1.In Python, implement a numerically-stable ridge regression that takes into account colinear (or nearlycolinear) regression variables. Show that it works by comparing it to the output of your R implementation.
+
+Since $\hat(\beta)=(X^tX)^{-1}X^TY$ and $X=U\Sigma V$, 
+$$\hat(\beta)=V(\Sigma\Sigma+I)^{-1}\Sigma U^T Y$$
+
+The function we create in this question is lm_ridge_py whose codes are in the file"lm_ridge_py.r" and test codes are in the file"test-lm-ridge-py.r".
+
+The ridge regression with R implementation:
+```{r}
+data("iris")
+iris=na.omit(iris)
+#colinear variables
+iris$Sepal.Width2=iris$Sepal.Width*2
+# the output of R
+r_fit1=lm_ridge(Sepal.Length ~ ., iris,lambda=0.5)
+```
+
+The ridge regression with python implementation:
+```{r}
+Y=matrix(iris$Sepal.Length, ncol = 1)
+X=model.matrix(Sepal.Length ~ .,iris)
+py_fit1=lm_ridge_py (Y,X,lambda =0.5)
+```
+
+Compare these two results:
+```{r}
+r_fit1$coefficients
+py_fit1$coefficients
+```
+
+We could observe that the results are the same.
+
+
+2.Create an “out-of-core” implementation of the linear model that reads in contiguous rows of a data frame from a file, updates the model. You may read the data from R and send it to your Python functions fo fitting.
+
+The function we create in this question is linear_model_py whose codes are in the file"linear-model-py.r" and its test codes are in "test-linear-model-py.r".
+
+We first create a dataset with n individuals and p features. Then we run linear model with the data of m individuals each time. So we got n/m sets of beta, then calculate the average of these sets of beta.
+
+```{r}
+n=1e6
+p=4
+X <- matrix(rnorm(n*p),n,p)
+beta_true <- matrix(c(2,4,1.5,5),p,1)
+Y <- X%*%beta_true
+m=1e3
+beta <- matrix(0,p,m)
+for(i in 1: (n/m)){
+  beta[,i] <- linear_model_py(Y[(1e3*(i-1)+1):(1000*i)],X[(1e3*(i-1)+1):(1000*i),])$coefficients
+}
+beta_py <- rowMeans(beta)
+beta_py
+beta_true
+```
+We could observe the beta we got is very precise. 
+
+3.Implement your own LASSO regression function in Python. Show that the results are the same as the function implemented in the casl package.
+
+The function we create in this question is lm_lasso_py whose codes are in the file "lm-lasso-py.r" and its test codes are in "test-lm-lasso-py.r"
+
+We know that:
+$$\hat(\beta)=sign(X^TY)(X^TX)^{-1}max\{|X^TY|-n\lambda,0\}$$
+```{r}
+data(iris)
+Y=matrix(iris$Sepal.Length, ncol = 1)
+X=model.matrix(Sepal.Length ~ .,iris)
+fit_lasso=lm_lasso_py(Y,X,lambda=0.01)
+fit_casl= casl::casl_lenet(X,Y,lambda=0.01,maxit=1000L)
+fit_lasso$coefficients
+fit_casl
+
+lm_lasso_py <- function(Y,X, lambda){
+  np <- import("numpy", as = "np", convert = FALSE)
+  n=nrow(X)
+  X=r_to_py(X)
+  Y=r_to_py(Y)
+  sign=np$sign(X$T$dot(Y))
+  max=np$maximum(np$subtract(np$abs(X$T$dot(Y)),n*lambda),0)
+  inv=np$linalg$inv(X$T$dot(X))
+  beta = np$multiply(sign,inv$dot(max))
+  ret <- list("coefficients" = py_to_r(beta))
+  return (ret)
+  }
+
+
+```
+
+4. Final Project proposal
+

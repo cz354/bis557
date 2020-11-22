@@ -1,0 +1,34 @@
+library(testthat)
+
+context("Test the output of homework 1.")
+
+test_that("You linear_model() function works in an easy case.", {
+
+  data(iris)
+  Y=matrix(iris$Sepal.Length, ncol = 1)
+  X=model.matrix(Sepal.Length ~ .,iris)
+
+
+  fit_linear_model <- linear_model_py(Y,X)
+
+  fit_lm <- lm(Sepal.Length  ~ ., iris)
+
+  expect_equivalent(fit_lm$coefficients, fit_linear_model$coefficients,
+                    tolerance = 1e-5)
+})
+
+test_that("You linear_model() function works with contrasts.", {
+
+  data(iris)
+  Y=matrix(iris$Sepal.Length, ncol = 1)
+  X=model.matrix(Sepal.Length ~ .,iris,contrasts = list(Species = "contr.sum"))
+
+  fit_linear_model <- linear_model_py(Y,X)
+
+  fit_lm <- lm(Sepal.Length  ~ ., iris, contrasts = list(Species = "contr.sum"))
+
+  expect_equivalent(fit_lm$coefficients, fit_linear_model$coefficients,
+                    tolerance = 1e-5)
+})
+
+
