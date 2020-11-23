@@ -20,9 +20,13 @@ Since in this homework, we need to use python in Rmarkdown, so here we need to d
 #install.packages("reticulate")
 library(bis557)
 library(reticulate)
-library(devtools)
-library(casl)
 use_condaenv("r-reticulate")
+```
+
+```{r}
+library(devtools)
+install_github("statsmaths/casl")
+library(casl)
 ```
 
 1.In Python, implement a numerically-stable ridge regression that takes into account colinear (or nearlycolinear) regression variables. Show that it works by comparing it to the output of your R implementation.
@@ -86,8 +90,7 @@ We could observe the beta we got is very precise.
 
 For an orthogonal design matrix, lasso regression has a closed-form solution:
 
-$$\hat{beta}_i^{lasso}$$
-$$=sign(\hat{\beta}_i^{LS})(|\beta}_i^{LS|-\lambda)^{+}$$
+$$ \hat{\beta}_i^{lasso} = sign(\hat{\beta}_i^{LS})(|\beta_i^{LS}|-\lambda)^{+}$$
 
 
 
@@ -110,3 +113,16 @@ We could observe that the results are similiar.
 
 4. The final project proposal
 
+Mechanisms of Action (MoA) Prediction
+
+https://www.kaggle.com/isaienkov/mechanisms-of-action-moa-prediction-eda
+
+Nowadays, understanding the underlying biological mechanism of a disease is the key factor to discover drug.Thus researchers seek to identify a protein target associated with a disease and then they could develop a molecule which could modulate that protein target.And we call the biological activity of that given molecule Mechanism-of-action or MoA. 
+
+One approach is to treat a sample of human cells with the drug and then analyze the cellular responses with algorithms that search for similarity to known patterns in large genomic databases, such as libraries of gene expression or cell viability patterns of drugs with known MoAs.
+
+In this competition, you will have access to a unique dataset that combines gene expression and cell viability data. In addition, you will have access to MoA annotations for more than 5,000 drugs in this dataset.
+
+As is customary, the dataset has been split into testing and training subsets. Hence, your task is to use the training dataset to develop an algorithm that automatically labels each case in the test set as one or more MoA classes. Note that since drugs can have multiple MoA annotations, the task is formally a multi-label classification problem.
+
+In this project, we need to predict multiple targets of the Mechanism of Action (MoA) response(s) of different samples. The features include  gene expression data and cell viability data.
