@@ -27,8 +27,8 @@ use_condaenv("r-reticulate")
 
 1.In Python, implement a numerically-stable ridge regression that takes into account colinear (or nearlycolinear) regression variables. Show that it works by comparing it to the output of your R implementation.
 
-Since $\hat(\beta)=(X^tX)^{-1}X^TY$ and $X=U\Sigma V$, 
-$$\hat(\beta)=V(\Sigma\Sigma+I)^{-1}\Sigma U^T Y$$
+Since $\hat{\beta}=(X^tX+\lambda I)^{-1}X^TY$ and $X=U\Sigma V$, 
+$$\hat{\beta}=V(\Sigma\Sigma+\lambda I)^{-1}\Sigma U^T Y$$
 
 The function we create in this question is lm_ridge_py whose codes are in the file"lm_ridge_py.r" and test codes are in the file"test-lm-ridge-py.r".
 
@@ -60,6 +60,7 @@ We could observe that the results are the same.
 
 2.Create an “out-of-core” implementation of the linear model that reads in contiguous rows of a data frame from a file, updates the model. You may read the data from R and send it to your Python functions fo fitting.
 
+
 The function we create in this question is linear_model_py whose codes are in the file"linear-model-py.r" and its test codes are in "test-linear-model-py.r".
 
 We first create a dataset with n individuals and p features. Then we run linear model with the data of m individuals each time. So we got n/m sets of beta, then calculate the average of these sets of beta.
@@ -83,24 +84,29 @@ We could observe the beta we got is very precise.
 
 3.Implement your own LASSO regression function in Python. Show that the results are the same as the function implemented in the casl package.
 
-The function we create in this question is lm_lasso_py whose codes are in the file "lm-lasso-py.py" and its test codes are in "test-lm-lasso-py.r"
+For an orthogonal design matrix, lasso regression has a closed-form solution:
 
-With the code in the textbook "A computational approach to statistical learning" as our reference, we write soft threshold function, updating beta vector using coordinate descent function and computing linear elastic net using coordinate descent function in python.
+$$\hat{beta}_i^{lasso}$$
+$$=sign(\hat{\beta}_i^{LS})(|\beta}_i^{LS|-\lambda)^{+}$$
 
+
+
+reference:"https://stats.stackexchange.com/questions/17781/derivation-of-closed-form-lasso-solution"
+
+For this case, we create function lm_lasso_py_or() whose codes are in "lm_lasso_py_or.r" file.
 ```{r}
-reticulate::source_python('../lm_lasso_py.py')
-```
-
-```{r}
-data(iris)
-Y=matrix(iris$Sepal.Length, ncol = 1)
-X=model.matrix(Sepal.Length ~ .,iris)
-W=1/nrow(Y)
-beta=c(rep(0,ncol(X)))
-fit_lasso=lm_lasso_py(Y,X,lambda=0.01,beta,W)
+n=1000
+p=4
+X <- matrix(rnorm(n*p),n,p)
+beta_true <- matrix(c(2,4,1.5,5),p,1)
+Y <- X%*%beta_true
 fit_casl= casl::casl_lenet(X,Y,lambda=0.01,maxit=1000L)
-fit_lasso$coefficients
+fit_lasso=lm_lasso_py_or(Y,X,lambda=0.01)
 fit_casl
-```
+fit_lasso$coefficients
 
+```
+We could observe that the results are similiar.
+
+4. The final project proposal
 
