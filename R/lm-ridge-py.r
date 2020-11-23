@@ -9,6 +9,7 @@
 #' X=model.matrix(Sepal.Length ~ .,iris)
 #' lm_ridge_py(Y,X,lambda=0.5)$coefficients
 #' @import reticulate
+#' @import stats
 #' @export
 
   lm_ridge_py <- function(Y,X, lambda){
