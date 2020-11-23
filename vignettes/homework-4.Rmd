@@ -28,7 +28,7 @@ install_github("statsmaths/casl")
 library(casl)
 ```
 
-1.In Python, implement a numerically-stable ridge regression that takes into account colinear (or nearlycolinear) regression variables. Show that it works by comparing it to the output of your R implementation.
+### 1.In Python, implement a numerically-stable ridge regression that takes into account colinear (or nearlycolinear) regression variables. Show that it works by comparing it to the output of your R implementation.
 
 Since $\hat{\beta}=(X^tX+\lambda I)^{-1}X^TY$ and $X=U\Sigma V$, 
 $$\hat{\beta}=V(\Sigma\Sigma+\lambda I)^{-1}\Sigma U^T Y$$
@@ -61,7 +61,7 @@ py_fit1$coefficients
 We could observe that the results are the same.
 
 
-2.Create an “out-of-core” implementation of the linear model that reads in contiguous rows of a data frame from a file, updates the model. You may read the data from R and send it to your Python functions fo fitting.
+### 2.Create an “out-of-core” implementation of the linear model that reads in contiguous rows of a data frame from a file, updates the model. You may read the data from R and send it to your Python functions fo fitting.
 
 
 The function we create in this question is linear_model_py whose codes are in the file"linear-model-py.r" and its test codes are in "test-linear-model-py.r".
@@ -85,7 +85,7 @@ beta_true
 ```
 We could observe the beta we got is very precise. 
 
-3.Implement your own LASSO regression function in Python. Show that the results are the same as the function implemented in the casl package.
+### 3.Implement your own LASSO regression function in Python. Show that the results are the same as the function implemented in the casl package.
 
 For an orthogonal design matrix, lasso regression has a closed-form solution:
 
@@ -108,9 +108,9 @@ fit_casl
 fit_lasso$coefficients
 
 ```
-We could observe that the results are similiar.
+We could observe that the results are similar.
 
-4. The final project proposal
+### 4. The final project proposal
 
 Mechanisms of Action (MoA) Prediction
 
@@ -118,5 +118,13 @@ https://www.kaggle.com/isaienkov/mechanisms-of-action-moa-prediction-eda
 
 Nowadays, understanding the underlying biological mechanism of a disease is the key factor to discover drug.Thus researchers seek to identify a protein target associated with a disease and then develop a molecule which could modulate that protein target.And we call the biological activity of that given molecule Mechanism-of-action or MoA. 
 
-Here in this project, with the dataset that combines gene expression and cell viability data in addition to the MoA annotations of more than 5,000 drugs,we need to predict multiple targets of the Mechanism of Action (MoA) response(s) of different samples.
+Here in this project, with the dataset that includes gene expression and cell viability data in addition to the MoA annotations of more than 5,000 drugs,we need to predict multiple targets of the Mechanism of Action (MoA) response(s) of different samples.
+
+Since it is a multi-labels classification problem and has a lot of features, it is challenging to select proper features and models. I'd like to consider PCA or lasso to conduct feature selection , and try to use and compare multiple classification models such as XGBoost and multilabel Neural Network.
+
+I hope in this project, I will be able to find a good classification model or algorithm to improve the predication of MoAs of drugs based on their biological activity. The accuracy is based on the log loss:
+$$score=-\frac{1}{M}\sum_{m=1}^M\frac{1}{N}\sum_{i=1}^N[y_{i,m}log(\hat{y_{i,m}})+(1-y_{i,m})log(1-\hat{y_{i,m}})$$
+
+
+
 
