@@ -18,7 +18,6 @@ Imports:
     foreach, 
     rsample,
     reticulate,
-    casl,
     devtools,
     stats
 Depends: 
